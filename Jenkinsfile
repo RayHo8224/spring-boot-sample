@@ -8,8 +8,7 @@ pipeline {
     }
     stage('test') {
       steps {
-        sh '''mvn test
-'''
+        sh 'mvn clean cobertura:cobertura test'
       }
     }
     stage('error') {
