@@ -11,20 +11,18 @@ pipeline {
         sh 'mvn clean cobertura:cobertura test'
       }
     }
-    stage('package') {
-      steps {
-        sh 'mvn package'
-      }
-    }
-    stage('archive') {
-      steps {
-        archiveArtifacts 'target/spring-boot-sample-data-rest-0.1.0.jar'
-      }
-    }
-    stage('deploy') {
-      steps {
-        sh '''make deploy-default
-'''
+    stage('report') {
+      parallel {
+        stage('report') {
+          steps {
+            junit 'target/surefire-reports/*.xml'
+          }
+        }
+        stage('error') {
+          steps {
+            cobertura(coberturaReportFile: 'target/site/cobertura/coverage.xml')
+          }
+        }
       }
     }
   }
